@@ -366,6 +366,10 @@ Max fee per blob gas to pay (Transaction type 3)
 
 Max fee per blob gas to pay (Transaction type 3)
 
+#### - `authorizationList`: [`List`](./common_types.md#list)`[`[`AuthorizationTuple`](./common_types.md#authorizationtuple)`]` `(fork: Prague)`
+
+List of authorizations the transaction carries (Transaction type 4)
+
 #### - `v`: [`ZeroPaddedHexNumber`](./common_types.md#zeropaddedhexnumber)
 
 V value of the transaction signature

@@ -156,6 +156,10 @@ Max fee per blob gas to pay (Transaction type 3)
 
 List of blob versioned hashes the transaction includes (Transaction type 3)
 
+#### - `authorizationList`: [`List`](./common_types.md#list)`[`[`AuthorizationTuple`](./common_types.md#authorizationtuple)`]` `(fork: Prague)`
+
+List of authorizations the transaction carries (Transaction type 4). Unlike `accessLists`, it is shared by every indexed test combination.
+
 #### - `sender`: [`Address`](./common_types.md#address)
 
 Sender address of the transaction

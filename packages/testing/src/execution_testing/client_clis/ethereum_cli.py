@@ -64,10 +64,10 @@ class EthereumCLI:
             resolved_path = Path(os.path.expanduser(binary)).resolve()
             if resolved_path.exists():
                 binary = resolved_path
-        binary = shutil.which(binary)  # type: ignore
-        if not binary:
+        resolved = shutil.which(binary)
+        if resolved is None:
             raise CLINotFoundInPathError(binary=binary)
-        self.binary = Path(binary)
+        self.binary = Path(resolved)
 
     @classmethod
     def register_tool(cls, tool_subclass: Type[Any]) -> None:

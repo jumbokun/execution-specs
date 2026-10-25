@@ -1339,12 +1339,12 @@ class _MinimizeDiffsVisitor(Visitor):
         before = node.before
         after = node.after
 
-        if before:
+        if not isinstance(before, BlankNode):
             # TODO: Probably should make this work:
             assert isinstance(before, BeforeNode)
             before = before.child
 
-        if after:
+        if not isinstance(after, BlankNode):
             # TODO: Probably should make this work:
             assert isinstance(after, AfterNode)
             after = after.child

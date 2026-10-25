@@ -479,7 +479,7 @@ def pytest_configure(config: pytest.Config) -> None:  # noqa: D103
     config.fixtures_source = fixtures_source  # type: ignore[attr-defined]
     config.fixture_source_flags = ["--input", fixtures_source.input_option]  # type: ignore[attr-defined]
 
-    if "cache" in sys.argv and not fixtures_source:
+    if "cache" in sys.argv and config.option.fixtures_source is None:
         pytest.exit(
             "The --input flag is required when using the cache command."
         )

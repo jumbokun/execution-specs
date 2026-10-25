@@ -46,7 +46,7 @@ def hive_clients_yaml_generator_command(
     client.
     """
     try:
-        if not client_file:
+        if not client_file.root:
             raise ValueError(
                 "No client information available - try updating hive"
             )

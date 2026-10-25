@@ -346,10 +346,7 @@ def test_blockchain_via_sync(
 
     # Find the last valid payload to send to sync client
     last_valid_payload = None
-    if (
-        fixture.sync_payload
-        and last_valid_block_hash == fixture.sync_payload.params[0].block_hash
-    ):
+    if last_valid_block_hash == fixture.sync_payload.params[0].block_hash:
         last_valid_payload = fixture.sync_payload
     else:
         # Find the payload that matches last_valid_block_hash
@@ -457,9 +454,7 @@ def test_blockchain_via_sync(
         try:
             response = sync_engine_rpc.forkchoice_updated_with_retry(
                 forkchoice_state=last_valid_block_forkchoice_state,
-                forkchoice_version=fixture.sync_payload.forkchoice_updated_version
-                if fixture.sync_payload
-                else fixture.payloads[-1].forkchoice_updated_version,
+                forkchoice_version=fixture.sync_payload.forkchoice_updated_version,
                 max_attempts=30,
                 wait_fixed=0.5,
             )

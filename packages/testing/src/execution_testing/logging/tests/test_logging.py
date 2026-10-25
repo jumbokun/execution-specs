@@ -183,7 +183,7 @@ class TestStandaloneConfiguration:
                     assert "Test log message" in log_content
             finally:
                 # Clean up
-                if handler:
+                if handler is not None:
                     handler.close()
                 logging.getLogger().handlers = []  # Remove all handlers
 

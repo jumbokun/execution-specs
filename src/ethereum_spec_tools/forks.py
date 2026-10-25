@@ -519,7 +519,7 @@ class Hardfork:
 
             mod = importlib.util.module_from_spec(spec)
             sys.modules[name] = mod
-            if spec.loader and hasattr(spec.loader, "exec_module"):
+            if hasattr(spec.loader, "exec_module"):
                 spec.loader.exec_module(mod)
 
         assert mod.__name__ == full_name

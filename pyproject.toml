@@ -510,7 +510,7 @@ enable_error_code = [
     "deprecated",
 
    #"mutable-override",
-   #"truthy-bool",
+    "truthy-bool",
    #"explicit-override",
    #"ignore-without-code",
    #"possibly-undefined",

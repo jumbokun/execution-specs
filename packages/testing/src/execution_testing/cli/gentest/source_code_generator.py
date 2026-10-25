@@ -6,7 +6,6 @@ This module maps a test provider instance to pytest source code.
 
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 import jinja2
@@ -55,8 +54,9 @@ def format_code(code: str) -> str:
     """
     Format the provided Python code using the ruff formatter.
 
-    This function writes the given code to a temporary Python file, formats it
-    using ruff, and returns the formatted code as a string.
+    The code is passed to ruff on stdin and read back from stdout. A temporary
+    file would not work on Windows, where a file that is still open cannot be
+    reopened by name.
 
     Args:
       code (str): The Python code to be formatted.
@@ -65,52 +65,45 @@ def format_code(code: str) -> str:
         str: The formatted Python code.
 
     """
-    # Create a temporary python file
-    with tempfile.NamedTemporaryFile(suffix=".py") as temp_file:
-        # Write the code to the temporary file
-        temp_file.write(code.encode("utf-8"))
-        # Ensure the file is written
-        temp_file.flush()
+    # Get the path to the formatter executable in the virtual environment
+    if sys.platform.startswith("win"):
+        formatter_path = Path(sys.prefix) / "Scripts" / "ruff.exe"
+    else:
+        formatter_path = Path(sys.prefix) / "bin" / "ruff"
 
-        # Create a Path object for the input file
-        input_file_path = Path(temp_file.name)
+    # Call ruff to format the code
+    config_path = AppConfig().ROOT_DIR.parent / "pyproject.toml"
 
-        # Get the path to the formatter executable in the virtual environment
-        if sys.platform.startswith("win"):
-            formatter_path = Path(sys.prefix) / "Scripts" / "ruff.exe"
-        else:
-            formatter_path = Path(sys.prefix) / "bin" / "ruff"
+    try:
+        result = subprocess.run(
+            [
+                str(formatter_path),
+                "format",
+                "--config",
+                str(config_path),
+                "--stdin-filename",
+                "generated_test.py",
+                "-",
+            ],
+            input=code,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            check=True,
+        )
+    except FileNotFoundError as e:
+        raise FileNotFoundError(
+            f"Could not run the 'ruff' formatter at '{formatter_path}'. "
+            f"gentest requires 'ruff' to format generated tests; ensure "
+            f"the development environment is installed, e.g. with "
+            f"'uv sync'."
+        ) from e
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(
+            f"Error formatting code using formatter '{formatter_path}': "
+            f"returncode={e.returncode}, stdout={e.stdout!r}, "
+            f"stderr={e.stderr!r}"
+        ) from e
 
-        # Call ruff to format the file
-        config_path = AppConfig().ROOT_DIR.parent / "pyproject.toml"
-
-        try:
-            subprocess.run(
-                [
-                    str(formatter_path),
-                    "format",
-                    str(input_file_path),
-                    "--no-cache",
-                    "--config",
-                    str(config_path),
-                ],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-        except FileNotFoundError as e:
-            raise FileNotFoundError(
-                f"Could not run the 'ruff' formatter at '{formatter_path}'. "
-                f"gentest requires 'ruff' to format generated tests; ensure "
-                f"the development environment is installed, e.g. with "
-                f"'uv sync'."
-            ) from e
-        except subprocess.CalledProcessError as e:
-            raise RuntimeError(
-                f"Error formatting code using formatter '{formatter_path}': "
-                f"returncode={e.returncode}, stdout={e.stdout!r}, "
-                f"stderr={e.stderr!r}"
-            ) from e
-
-        # Return the formatted source code
-        return input_file_path.read_text()
+    # Return the formatted source code
+    return result.stdout

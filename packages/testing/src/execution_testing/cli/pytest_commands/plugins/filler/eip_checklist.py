@@ -60,7 +60,7 @@ TEMPLATE_PATH = (
     / "checklist_templates"
     / "eip_testing_checklist_template.md"
 )
-TEMPLATE_CONTENT = TEMPLATE_PATH.read_text()
+TEMPLATE_CONTENT = TEMPLATE_PATH.read_text(encoding="utf-8")
 EXTERNAL_COVERAGE_FILE_NAME = "eip_checklist_external_coverage.txt"
 NOT_APPLICABLE_FILE_NAME = "eip_checklist_not_applicable.txt"
 WARNINGS_LINE = "<!-- WARNINGS LINE -->"
@@ -299,7 +299,7 @@ class EIP:
         not_applicable_path = self.path / NOT_APPLICABLE_FILE_NAME
         if not not_applicable_path.exists():
             return
-        with not_applicable_path.open() as f:
+        with not_applicable_path.open(encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -327,7 +327,7 @@ class EIP:
         external_coverage_path = self.path / EXTERNAL_COVERAGE_FILE_NAME
         if not external_coverage_path.exists():
             return
-        with external_coverage_path.open() as f:
+        with external_coverage_path.open(encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -397,7 +397,7 @@ class EIP:
 
         # Write the filled checklist
         output_dir.parent.mkdir(exist_ok=True, parents=True)
-        output_dir.write_text("\n".join(lines))
+        output_dir.write_text("\n".join(lines), encoding="utf-8")
 
         return output_dir
 

@@ -108,7 +108,7 @@ def test_eip_checklist_collection(testdir: Any) -> None:
     assert checklist_file.exists()
 
     # Verify the checklist contains the expected markers
-    content = checklist_file.readlines()
+    content = checklist_file.read_text("utf-8").splitlines()
     assert any(re.search(r"✅.*test_exact_gas", line) for line in content)
     assert any(re.search(r"✅.*test_invalid_v", line) for line in content)
     assert any(
@@ -118,7 +118,7 @@ def test_eip_checklist_collection(testdir: Any) -> None:
 
     checklist_file = checklist_dir / "eip2930_checklist.md"
     assert checklist_file.exists()
-    content = checklist_file.readlines()
+    content = checklist_file.read_text("utf-8").splitlines()
     assert not any(re.search(r"✅.*test_exact_gas", line) for line in content)
     assert any(re.search(r"✅.*test_invalid_v", line) for line in content)
     assert any(
@@ -187,7 +187,7 @@ def test_generator_built_test_is_credited_to_its_directory(
 
     checklist_file = testdir.tmpdir / "checklists" / "eip7702_checklist.md"
     assert checklist_file.exists()
-    content = checklist_file.readlines()
+    content = checklist_file.read_text("utf-8").splitlines()
     assert any(re.search(r"✅.*test_generated", line) for line in content)
 
 

@@ -16,6 +16,7 @@ sessions. The core logging functionality is in execution_testing.logging.
 import functools
 import logging
 import os
+import re
 import sys
 from datetime import datetime, timezone
 from logging import LogRecord
@@ -77,7 +78,14 @@ def get_log_stem(argv0: str, argv1: Optional[str]) -> str:
     """Generate the stem (prefix-subcommand-timestamp) for log files."""
     stem = Path(argv0).stem
     prefix = "pytest" if stem in ("", "-c", "__main__") else stem
-    subcommand = argv1 if argv1 and not argv1.startswith("-") else None
+    # Only a bare word is a subcommand (e.g. `consume engine`). A test path
+    # such as `tests/foo.py::test_bar[x]` would add directories to the log
+    # path, and `:` is not valid in a Windows file name.
+    subcommand = (
+        argv1
+        if argv1 and re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]*", argv1)
+        else None
+    )
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
 
     name_parts = [prefix]

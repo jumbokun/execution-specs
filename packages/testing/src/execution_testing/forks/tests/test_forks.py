@@ -336,7 +336,7 @@ def test_transition_fork_comparison() -> None:
     assert BerlinToLondonAt5 < ParisToShanghaiAtTime15k
     assert ParisToShanghaiAtTime15k > BerlinToLondonAt5
     assert BerlinToLondonAt5 == BerlinToLondonAt5
-    assert BerlinToLondonAt5 != ParisToShanghaiAtTime15k
+    assert BerlinToLondonAt5 != ParisToShanghaiAtTime15k  # type: ignore[comparison-overlap]
     assert BerlinToLondonAt5 <= ParisToShanghaiAtTime15k
     assert ParisToShanghaiAtTime15k >= BerlinToLondonAt5
 

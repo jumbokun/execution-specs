@@ -74,4 +74,5 @@ def test_chunked_receipts_keep_request_order(
     hashes = [Hash(i) for i in range(1, 6)]
     receipts = rpc.get_transaction_receipts(hashes)
     assert post.call_count == 3
-    assert receipts == [hex(i) for i in range(1, 6)]
+    # The mocked transport returns the hex strings in place of receipts.
+    assert receipts == [hex(i) for i in range(1, 6)]  # type: ignore[comparison-overlap]

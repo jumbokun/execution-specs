@@ -98,9 +98,10 @@ def test_cache_build_and_read_methods_agree_with_source() -> None:
     alloc = _fixture_alloc()
     assert alloc._phase is _Phase.CONSTRUCTION
 
-    # The first PreState call must transition the alloc to LIVE.
+    # The first PreState call must transition the alloc to LIVE. mypy keeps
+    # the narrowing from the assert above across the call.
     acct_b = alloc.get_account_optional(ADDR_B)
-    assert alloc._phase is _Phase.LIVE
+    assert alloc._phase is _Phase.LIVE  # type: ignore[comparison-overlap]
     assert acct_b is not None
     assert acct_b.nonce == Uint(3)
     assert acct_b.balance == U256(7)

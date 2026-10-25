@@ -670,7 +670,7 @@ def test_clz_call_operation(
     state_test: StateTestFiller,
     pre: Alloc,
     opcode: Op,
-    context: CallingContext,
+    context: int,
 ) -> None:
     """Test CLZ opcode with call operation."""
     test_cases = [0, 64, 255]

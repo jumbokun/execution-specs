@@ -2319,11 +2319,8 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     # Only merge if partial indexes were actually written (i.e., tests produced
     # fixtures). When no tests are filled (e.g., all skipped), no partial
     # indexes exist and merge_partial_indexes should not be called.
-    if (
-        session.config.getoption("generate_index")
-        and not session_instance.filling_phase
-        == FixtureFillingPhase.PRE_ALLOC_GENERATION
-    ):
+    # The pre-alloc generation phase returned above, so this is a fill phase.
+    if session.config.getoption("generate_index"):
         meta_dir = fixture_output.directory / ".meta"
         if meta_dir.exists() and any(meta_dir.glob("partial_index*.jsonl")):
             _log_timing("merge_partial_indexes: starting...")
